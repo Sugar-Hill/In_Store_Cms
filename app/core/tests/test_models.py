@@ -1,9 +1,18 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from core import models
+
+
+def sample_user(email='test@testing.com', password='password'):
+    """Create a sample user"""
+    return get_user_model().objects.create_employee(email, password)
+
 
 class ModelTests(TestCase):
-    """Test our model"""
+    """Testing the models"""
 
     def test_create_user_with_email_and_password(self):
         """Test creating a user with a username and password"""
@@ -44,3 +53,25 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
+
+    def test_product_string(self):
+        """Test the product string representation"""
+        product = models.Product.objects.create(
+            employee=sample_user(),
+            name='Nike Air Zoom',
+            description='Got a need for speed?',
+            price=12.99,
+            stock=100,
+        )
+
+        self.assertEqual(str(product), product.name)
+
+    @patch('uuid.uuid4')
+    def test_product_file_name_uuid(self, mock_uuid):
+        """Test that the image is saved in the correct location"""
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+        file_path = models.recipe_image_file_path(None, 'image.jpg')
+
+        exp_path = f'uploads/product/{uuid}.jpg'
+        self.assertEqual(file_path, exp_path)

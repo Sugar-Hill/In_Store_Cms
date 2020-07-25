@@ -1,7 +1,19 @@
+import uuid
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, \
     BaseUserManager, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
+
+def recipe_image_file_path(instance, filename):
+    """"Generate file path for new product image"""
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    return os.path.join('uploads/product/', filename)
 
 
 # Create your models here.
@@ -40,6 +52,7 @@ class EmployeeManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     "Custom user model that supports using email instead of username"
     email = models.EmailField(max_length=255, unique=True)
+    # Store_id foreign key
     full_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=True)
@@ -47,3 +60,34 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = EmployeeManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Product(models.Model):
+    """Product model"""
+    employee = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+    price = models.FloatField()
+    stock = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class Order(models.Model):
+    products = models.ManyToManyField(Product)
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    # Replace with choices field, drop-down
+    is_fulfilled = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
