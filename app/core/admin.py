@@ -6,6 +6,7 @@ from core import models
 
 
 # Register your models here.
+# TODO: Change this view
 class UserAdmin(UserAdmin):
     ordering = ['id']
     list_display = ['email', 'full_name']

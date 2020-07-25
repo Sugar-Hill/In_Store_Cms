@@ -37,7 +37,7 @@ class ModelTests(TestCase):
         """Test creating a new admin employee"""
         email = 'rick@rickandmorty.com'
         password = 'I<3Morty'
-        user = get_user_model().objects.create_admin_employee(
+        user = get_user_model().objects.create_superuser(
             email=email,
             password=password
         )

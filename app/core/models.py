@@ -10,7 +10,7 @@ class EmployeeManager(BaseUserManager):
     Custom user model for employees where the email is the unique
     identifier for auth instead of usernames
     """
-    # Todo: Add first name field
+    # TODO: Add required fields such as firstname
     def create_employee(self, email, password, **extra_fields):
         """
         Create and save an employee with provided email and password.
@@ -23,7 +23,10 @@ class EmployeeManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_admin_employee(self, email, password, **extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Create and save an admin employee with provided email and password.
+        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
