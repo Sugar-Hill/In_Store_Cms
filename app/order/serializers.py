@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from core.models import Order
+from product.serializers import ProductSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -11,3 +12,5 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'products', 'date_ordered',
                   'is_fulfilled', 'is_completed')
         read_only_fields = ('id',)
+
+    products = ProductSerializer(many=True, read_only=True)

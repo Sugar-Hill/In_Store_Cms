@@ -129,7 +129,8 @@ class PrivateUserApiTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {
             'full_name': self.user.full_name,
-            'email': self.user.email
+            'email': self.user.email,
+            'is_staff': self.user.is_staff
         })
 
     def test_post_me_not_allowed(self):

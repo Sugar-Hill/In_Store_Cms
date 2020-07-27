@@ -55,7 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Store_id foreign key
     full_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     objects = EmployeeManager()
 

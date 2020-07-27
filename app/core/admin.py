@@ -15,7 +15,7 @@ class UserAdmin(UserAdmin):
         (gettext('Personal Info'), {'fields': ('full_name',)}),
         (
             gettext('Permissions'),
-            {'fields': ('is_active', 'is_staff', 'is_superuser')}
+            {'fields': ('is_active', 'is_staff')}
         ),
         (gettext('Important dates'), {'fields': ('last_login',)})
     )
